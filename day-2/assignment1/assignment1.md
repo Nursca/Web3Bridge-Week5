@@ -7,7 +7,7 @@
 
 # 1. Where are your structs, mappings and arrays stored?
 
-Everything depends on where ther are declared. Data can be stored in either **Storage,** **Memory,** **Calldata**.
+Everything depends on where they are declared. Data can be stored in either **Storage,** **Memory,** **Calldata**.
 
 
 If **Struct**, and **Arrays** are declared at contract level which makes them state variables, that means they are stored in storage. 
