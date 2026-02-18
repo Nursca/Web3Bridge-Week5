@@ -1,0 +1,46 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+contract SaveEther {
+    mapping(address => uint256) public balances;
+
+    event DepositSuccessful(address indexed sender, uint indexed amount);
+
+    event WithdrawSuccessful(address indexed reciever, uint indexed amount, bytes data);
+
+    function deposit() external payable {
+        require(msg.sender != address(0), "Address zero detected"); // To check that a zero address doesn't intract with our contract
+        
+        require(msg.value > 0, "Can't deposit zero value"); // To check that the address intracting with the function doesn't send any amount less than zero
+        
+        balances[msg.sender] = balances[msg.sender] + msg.value; 
+
+        emit DepositSuccessful(msg.sender, msg.value);
+    }
+
+    function withdraw(uint256 _amount) external payable {
+        require(msg.sender != address(0), "Address zero detected");
+        
+        require(msg.value > 0, "Can't withdraw zero value");
+
+        uint256 userSavings_ = balances[msg.sender];
+
+        require(userSavings_ > 0, "Insufficient funds");
+
+        balances[msg.sender] = userSavings_ - _amount;
+
+        (bool result, bytes memory data) = payable(msg.sender).call{value: _amount}("");
+
+        require(result, "transfer failed");
+
+        emit  WithdrawSuccessful(msg.sender, _amount, data);
+    }
+
+    function getUserSavings() external view returns (uint256) {
+        return balances[msg.sender];
+    }
+
+    function getContractBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+}
