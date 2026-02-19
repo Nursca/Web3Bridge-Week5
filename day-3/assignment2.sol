@@ -71,7 +71,7 @@ contract NexusSchools {
         bool success = paymentToken.transferFrom(msg.sender, address(this), fee);
         require (success, "Fee payment failed");
 
-        Student memory newStudent = Student({id: studentId, name: _name, level: _level, hasPaid: false, paidAt: block.timestamp});
+        Student memory newStudent = Student({id: studentId, name: _name, level: _level, hasPaid: true, paidAt: block.timestamp});
         students.push(newStudent);
     }
 
