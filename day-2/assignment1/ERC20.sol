@@ -45,6 +45,8 @@ contract ERC20 {
     function transfer(address _to, uint256 _value) public returns (bool) {
         require (balance [msg.sender] >= _value, "Insufficient Funds");
 
+        require(_value > 0, "can't send zero value");
+
         require (_to != address(0), "Address zero detected");
 
         balance[msg.sender] = balance[msg.sender] - _value;
@@ -57,6 +59,8 @@ contract ERC20 {
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool) {
         require(balance [_from] >= _value, "Insufficient Funds");
+
+        require(_value > 0, "Can't send zero value");
 
         require(_value <= tokenAllowance[_from][msg.sender], "Funds not approved");
 
@@ -78,9 +82,11 @@ contract ERC20 {
     function approve(address _spender, uint256 _value) public returns(bool) {
         require(_spender != address(0), "Address zero detected");
 
+        require(_value > 0, "Can't send zero value");
+
         require(_value == 0 || tokenAllowance[msg.sender][_spender] == 0, "tokenAllowance must reset to 0 first");
 
-        tokenAllowance[msg.sender][_spender] = _value;
+        tokenAllowance[msg.sender][_spender] = tokenAllowance[msg.sender][_spender] + _value;
 
         emit Approval(msg.sender, _spender, _value);
 
