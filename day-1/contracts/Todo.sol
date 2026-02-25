@@ -41,7 +41,6 @@ contract Todo {
     function deleteTask(uint8 _id) external{
         for (uint8 i; i < tasks.length; i++) {
             if (tasks[i].id == _id) {
-                tasks[i] = tasks [tasks.length -1];
                 tasks.pop();
             }
         }

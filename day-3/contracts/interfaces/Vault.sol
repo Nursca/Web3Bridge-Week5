@@ -1,31 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-interface IERC20 {
-    function name() external view returns (string memory);
-
-    function symbol() external view returns (string memory);
-
-    function decimals() external view returns (uint8);
-
-    function totalSupply() external view returns (uint256);
-
-    function balanceOf(address _owner) external view returns (uint256 balance);
-
-    function transfer(address _to, uint256 _value) external returns (bool success);
-
-    function transferFrom(address _from, address _to, uint256 _value) external returns (bool success);
-
-    function approve(address _spender, uint256 _value) external returns (bool success);
-
-    function allowance(address _owner, address _spender) external view returns (uint256 remaining);
-}
+import {IERC20} from "./IERC20.sol";
 
 contract Vault {
-    IERC20 public token_address;
+    address token_address;
 
     constructor(address _tokenAddress) {
-        token_address = IERC20(_tokenAddress);
+        token_address = _tokenAddress;
     }
 
     mapping(address => uint256) public balances;
@@ -36,7 +18,7 @@ contract Vault {
 
     event WithdrawSuccessful(address indexed reciever, uint indexed amount, bytes data);
 
-    function deposit() external payable {
+    function depositEth() external payable {
         require(msg.sender != address(0), "Address zero detected"); // To check that a zero address doesn't intract with our contract
         
         require(msg.value > 0, "Can't deposit zero value"); // To check that the address intracting with the function doesn't send any amount less than zero
@@ -59,7 +41,7 @@ contract Vault {
         emit DepositSuccessful(msg.sender, _amount);
     }
 
-    function withdraw(uint256 _amount) external payable {
+    function withdrawEth(uint256 _amount) external payable {
         require(msg.sender != address(0), "Address zero detected");
         
         require(msg.value > 0, "Can't withdraw zero value");
@@ -67,6 +49,8 @@ contract Vault {
         uint256 userSavings_ = balances[msg.sender];
 
         require(userSavings_ > 0, "Insufficient funds");
+
+        require (_amount <= userSavings_, "You didn't save that much");
 
         balances[msg.sender] = userSavings_ - _amount;
 
@@ -80,7 +64,7 @@ contract Vault {
     function withdrawERC20(uint256 _amount) external {
         require (_amount > 0, "Can't send zero value");
 
-        require(erc20SavingsBalance[msg.sender] >= _amount, "Not enough savings");
+        require(erc20SavingsBalance[msg.sender] <= _amount, "Not enough savings");
 
         erc20SavingsBalance[msg.sender] = erc20SavingsBalance[msg.sender] - _amount;
 

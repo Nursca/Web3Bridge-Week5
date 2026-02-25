@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: SEE LICENSE IN LICENSE
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
 interface IREC20 {
@@ -81,7 +81,6 @@ contract NexusSchools {
             if(staffs[i].id == _id){
                 require(staffs[i].account != address(0), "Invalid Staff");
                 staffAccount = staffs[i].account;
-
             }
         }
         require(staffAccount != address(0), "Staff not found");
